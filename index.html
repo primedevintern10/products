@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BeautyMart Products</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f4f6ff;
+      --surface: #ffffff;
+      --surface2: #f3f5ff;
+      --border: #d8def6;
+      --accent: #1d4ed8;
+      --accent2: #06b6d4;
+      --text: #14213d;
+      --text-muted: #5f6b8c;
+      --green: #0f766e;
+      --row-hover: #eef3ff;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #dbe7ff 0%, transparent 60%),
+        radial-gradient(1000px 420px at 95% 0%, #cffafe 0%, transparent 55%),
+        var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      flex-shrink: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(29, 78, 216, 0.07);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.28);
+    }
+
+    .logo h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 30px;
+      line-height: 0.95;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #1e3a8a;
+    }
+
+    .logo span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .search-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 12px 9px 38px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+    input[type="text"]::placeholder { color: var(--text-muted); }
+
+    select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 32px 9px 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    .badge-count {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(29, 78, 216, 0.22);
+    }
+
+    /* ── TABLE WRAPPER ── */
+    .table-wrap {
+      flex: 1;
+      overflow: hidden;
+      padding: 24px 32px 18px;
+      /* Ensure the wrapper creates a new stacking context */
+      position: relative;
+      z-index: 1;
+    }
+
+    .table-container {
+      height: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--surface);
+      /* Create a new stacking context */
+      position: relative;
+      box-shadow: 0 20px 40px rgba(20, 33, 61, 0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate; /* Changed from collapse for better sticky support */
+      border-spacing: 0;
+    }
+
+    /* ── STICKY HEADER ── */
+    thead tr {
+      background: linear-gradient(135deg, #e9eeff, #edf8ff);
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: color .2s;
+      background: linear-gradient(135deg, #e9eeff, #edf8ff);
+    }
+
+    tbody {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Fix for the first and last th borders */
+    th:first-child {
+      border-top-left-radius: 13px;
+    }
+    
+    th:last-child {
+      border-top-right-radius: 13px;
+    }
+
+    th:hover { color: #1e3a8a; }
+
+    th.sorted { color: #1e3a8a; }
+
+    th .sort-icon {
+      display: inline-block;
+      margin-left: 5px;
+      opacity: 0.4;
+      font-size: 10px;
+    }
+
+    th.sorted .sort-icon { opacity: 1; }
+
+    /* ── ROWS ── */
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fbfcff;
+    }
+
+    tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 13px;
+    }
+    
+    tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 13px;
+    }
+
+    tbody tr:hover { background: var(--row-hover); }
+
+    td {
+      padding: 14px 18px;
+      font-size: 14px;
+      vertical-align: middle;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Remove bottom border from last row */
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── IMAGE CELL ── */
+    .img-cell {
+      width: 60px;
+      padding: 10px 18px;
+    }
+
+    .product-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+      padding: 4px;
+      display: block;
+      border: 1px solid #e3e8f8;
+      cursor: zoom-in;
+    }
+
+    .img-fallback {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    /* ── NAME CELL ── */
+    .product-name {
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+      max-width: 360px;
+    }
+
+    /* ── BRAND BADGE ── */
+    .brand-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      background: #edf2ff;
+    }
+
+    /* ── PRICE ── */
+    .price {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .price::before { content: 'Rs '; font-size: 11px; font-weight: 400; color: var(--text-muted); }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty svg { margin-bottom: 12px; opacity: .4; }
+    .empty p { font-size: 15px; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      background: #f8faff;
+    }
+
+    /* ── IMAGE MODAL ── */
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    .image-modal.open {
+      display: flex;
+    }
+
+    .image-modal-content {
+      position: relative;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #d8def6;
+      padding: 12px;
+      max-width: min(92vw, 980px);
+      max-height: 88vh;
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.35);
+    }
+
+    .image-modal img {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: calc(88vh - 24px);
+      object-fit: contain;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .image-modal-close {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: #1e293b;
+      color: #fff;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+    }
+
+    /* brand colors */
+    .brand-cerave    { background: #e8f1ff; color: #1d4ed8; border: 1px solid #c7dcff; }
+    .brand-cetaphil  { background: #e9fbf1; color: #0f766e; border: 1px solid #bfead5; }
+    .brand-neutrogena{ background: #fff1f0; color: #c2410c; border: 1px solid #ffd1cc; }
+    .brand-laroche   { background: #fff7ea; color: #b45309; border: 1px solid #fde2b7; }
+    .brand-bioderma  { background: #f5efff; color: #7c3aed; border: 1px solid #ded0ff; }
+    .brand-vaseline  { background: #ecfeff; color: #0e7490; border: 1px solid #b9eef5; }
+    .brand-default   { background: #eef2ff; color: #475569; border: 1px solid #dce4ff; }
+
+    @media (max-width: 768px) {
+      .topbar { flex-wrap: wrap; padding: 16px; }
+      .controls { max-width: 100%; }
+      .table-wrap { padding: 12px; }
+      td, th { padding: 10px 12px; }
+      .product-name { max-width: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <div>
+      <h1>BeautyMart</h1>
+      <span>Product Catalogue</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search" placeholder="Search products or brands…" />
+    </div>
+    <select id="brandFilter">
+      <option value="">All Brands</option>
+    </select>
+    <select id="sortBy">
+      <option value="">Sort by…</option>
+      <option value="name-asc">Name A→Z</option>
+      <option value="name-desc">Name Z→A</option>
+      <option value="price-asc">Price Low→High</option>
+      <option value="price-desc">Price High→Low</option>
+      <option value="brand-asc">Brand A→Z</option>
+    </select>
+  </div>
+
+  <div class="badge-count" id="countBadge">0 Products</div>
+</div>
+
+<div class="table-wrap">
+  <div class="table-container">
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th class="img-cell">Image</th>
+          <th data-col="product_name">Product Name <span class="sort-icon">↕</span></th>
+          <th data-col="brand">Brand <span class="sort-icon">↕</span></th>
+          <th data-col="price">Price <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="4" class="empty"><p>Loading products…</p></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="imageModal" class="image-modal" aria-hidden="true">
+  <div class="image-modal-content">
+    <button id="imageModalClose" class="image-modal-close" aria-label="Close image preview">×</button>
+    <img id="imageModalImg" src="" alt="Product preview" />
+  </div>
+</div>
+
+<div class="footer" id="footer"></div>
+
+<script>
+  let allProducts = [];
+  let filtered = [];
+
+  const brandColors = {
+    'cerave':     'brand-cerave',
+    'cetaphil':   'brand-cetaphil',
+    'neutrogena': 'brand-neutrogena',
+    'la roche':   'brand-laroche',
+    'bioderma':   'brand-bioderma',
+    'vaseline':   'brand-vaseline',
+  };
+
+  function getBrandClass(brand = '') {
+    const key = brand.toLowerCase();
+    for (const [k, v] of Object.entries(brandColors)) {
+      if (key.includes(k)) return v;
+    }
+    return 'brand-default';
+  }
+
+  function parsePrice(p = '') {
+    return parseInt(p.replace(/,/g, '')) || 0;
+  }
+
+  function renderRows(data) {
+    const tbody = document.getElementById('tableBody');
+    document.getElementById('countBadge').textContent = `${data.length} Product${data.length !== 1 ? 's' : ''}`;
+
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="4"><div class="empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <p>No products match your search.</p>
+      </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map(p => `
+      <tr>
+        <td class="img-cell">
+          ${p.image_url
+            ? `<img class="product-img" src="${p.image_url}" data-full-src="${p.image_url}" alt="${p.product_name}" loading="lazy"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : ''}
+          <div class="img-fallback" style="display:${p.image_url ? 'none' : 'flex'}">🧴</div>
+        </td>
+        <td><div class="product-name">${p.product_name || '—'}</div></td>
+        <td><span class="brand-badge ${getBrandClass(p.brand)}">${p.brand || '—'}</span></td>
+        <td><span class="price">${p.price || '—'}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const brand = document.getElementById('brandFilter').value.toLowerCase();
+    const sort = document.getElementById('sortBy').value;
+
+    filtered = allProducts.filter(p => {
+      const matchQ = !q || p.product_name?.toLowerCase().includes(q) || p.brand?.toLowerCase().includes(q);
+      const matchB = !brand || p.brand?.toLowerCase() === brand;
+      return matchQ && matchB;
+    });
+
+    if (sort === 'name-asc')   filtered.sort((a, b) => (a.product_name||'').localeCompare(b.product_name||''));
+    if (sort === 'name-desc')  filtered.sort((a, b) => (b.product_name||'').localeCompare(a.product_name||''));
+    if (sort === 'price-asc')  filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+    if (sort === 'price-desc') filtered.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+    if (sort === 'brand-asc')  filtered.sort((a, b) => (a.brand||'').localeCompare(b.brand||''));
+
+    renderRows(filtered);
+  }
+
+  function populateBrandFilter(products) {
+    const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+    const sel = document.getElementById('brandFilter');
+    brands.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.toLowerCase();
+      opt.textContent = b;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Column header click to sort
+  document.querySelectorAll('th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      const sortSel = document.getElementById('sortBy');
+      if (col === 'product_name') sortSel.value = 'name-asc';
+      if (col === 'brand') sortSel.value = 'brand-asc';
+      if (col === 'price') sortSel.value = 'price-asc';
+      document.querySelectorAll('th[data-col]').forEach(t => t.classList.remove('sorted'));
+      th.classList.add('sorted');
+      applyFilters();
+    });
+  });
+
+  document.getElementById('search').addEventListener('input', applyFilters);
+  document.getElementById('brandFilter').addEventListener('change', applyFilters);
+  document.getElementById('sortBy').addEventListener('change', applyFilters);
+
+  // Image preview modal
+  const imageModal = document.getElementById('imageModal');
+  const imageModalImg = document.getElementById('imageModalImg');
+  const imageModalClose = document.getElementById('imageModalClose');
+  const tableBody = document.getElementById('tableBody');
+
+  function openImageModal(src, altText) {
+    if (!src) return;
+    imageModalImg.src = src;
+    imageModalImg.alt = altText || 'Product preview';
+    imageModal.classList.add('open');
+    imageModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeImageModal() {
+    imageModal.classList.remove('open');
+    imageModal.setAttribute('aria-hidden', 'true');
+    imageModalImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  tableBody.addEventListener('click', (event) => {
+    const img = event.target.closest('.product-img');
+    if (!img) return;
+    openImageModal(img.dataset.fullSrc || img.src, img.alt);
+  });
+
+  imageModalClose.addEventListener('click', closeImageModal);
+  imageModal.addEventListener('click', (event) => {
+    if (event.target === imageModal) {
+      closeImageModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && imageModal.classList.contains('open')) {
+      closeImageModal();
+    }
+  });
+
+  // Sample data in case products1.json is not available
+  const sampleData = [
+    {
+      product_name: "CeraVe Acne Control Cleanser 473ml",
+      brand: "CeraVe",
+      price: "Rs 11,250",
+      image_url: null
+    },
+    {
+      product_name: "The Ordinary Niacinamide 10% + Zinc 1% Serum 60ml",
+      brand: "The Ordinary",
+      price: "Rs 7,605",
+      image_url: null
+    },
+    {
+      product_name: "The Ordinary Salicylic Acid 2% Solution 30ml",
+      brand: "The Ordinary",
+      price: "Rs 6,255",
+      image_url: null
+    }
+  ];
+
+  // Try to load data, fallback to sample if fails
+  fetch('products1.json')
+    .then(r => {
+      if (!r.ok) throw new Error('Network response was not ok');
+      return r.json();
+    })
+    .then(data => {
+      allProducts = data;
+      populateBrandFilter(data);
+      applyFilters();
+      document.getElementById('footer').textContent =
+        `${data.length} products loaded from products1.json`;
+    })
+    .catch(() => {
+      console.log('Using sample data (products1.json not found)');
+      allProducts = sampleData;
+      populateBrandFilter(sampleData);
+      applyFilters();
+      document.getElementById('footer').textContent =
+        `3 sample products (products1.json not found)`;
+    });
+</script>
+</body>
+</html>
