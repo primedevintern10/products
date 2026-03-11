@@ -94,6 +94,7 @@
       gap: 12px;
       flex: 1;
       max-width: 600px;
+      min-width: 0;
     }
 
     .search-wrap {
@@ -174,6 +175,7 @@
 
     .table-container {
       height: 100%;
+      min-height: 0;
       border-radius: 14px;
       border: 1px solid var(--border);
       overflow-y: auto;
@@ -186,6 +188,7 @@
 
     table {
       width: 100%;
+      min-width: 760px;
       border-collapse: separate; /* Changed from collapse for better sticky support */
       border-spacing: 0;
     }
@@ -419,12 +422,139 @@
     .brand-vaseline  { background: #ecfeff; color: #0e7490; border: 1px solid #b9eef5; }
     .brand-default   { background: #eef2ff; color: #475569; border: 1px solid #dce4ff; }
 
+    @media (max-width: 900px) {
+      .topbar {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 18px 18px 16px;
+      }
+
+      .controls {
+        max-width: 100%;
+        min-width: 100%;
+      }
+
+      .badge-count {
+        margin-left: auto;
+      }
+
+      .table-wrap {
+        padding: 16px;
+      }
+    }
+
     @media (max-width: 768px) {
-      .topbar { flex-wrap: wrap; padding: 16px; }
-      .controls { max-width: 100%; }
-      .table-wrap { padding: 12px; }
-      td, th { padding: 10px 12px; }
-      .product-name { max-width: 200px; }
+      body {
+        height: 100dvh;
+      }
+
+      .topbar {
+        gap: 14px;
+        padding: 16px 14px 14px;
+      }
+
+      .logo {
+        width: 100%;
+      }
+
+      .logo h1 {
+        font-size: 24px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .search-wrap,
+      .controls select {
+        width: 100%;
+      }
+
+      .controls select,
+      input[type="text"] {
+        font-size: 16px;
+      }
+
+      .badge-count {
+        margin-left: 0;
+        align-self: flex-start;
+      }
+
+      .table-wrap {
+        padding: 12px;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 640px;
+      }
+
+      td, th {
+        padding: 10px 12px;
+      }
+
+      .img-cell {
+        width: 52px;
+        padding: 8px 12px;
+      }
+
+      .product-img,
+      .img-fallback {
+        width: 40px;
+        height: 40px;
+      }
+
+      .product-name {
+        max-width: 220px;
+        font-size: 13px;
+      }
+
+      .brand-badge {
+        font-size: 11px;
+        padding: 3px 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar {
+        padding: 14px 12px 12px;
+      }
+
+      .logo-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+      }
+
+      .logo h1 {
+        font-size: 22px;
+      }
+
+      .logo span {
+        font-size: 11px;
+      }
+
+      .table-wrap {
+        padding: 10px;
+      }
+
+      table {
+        min-width: 560px;
+      }
+
+      th {
+        font-size: 10px;
+      }
+
+      td {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
